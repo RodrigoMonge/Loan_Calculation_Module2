@@ -116,10 +116,10 @@ def save_qualifying_loans(qualifying_loans):
     if qualifying_loans:    
 
         # Added command line to ask to print a CSV file with the qualifying loans
-        print_loans  = questionary.text("Do you want to print the qualifying loans (y/n)").ask()
+        print_loans  = questionary.confirm("Do you want to print the qualifying loans").ask()
 
         # Added conditional in case the answer is no or a different reply
-        if print_loans == "y":
+        if print_loans:
 
             # Added prompt for a path
             output_path = questionary.text('Please enter file_path/file_name.csv').ask()
@@ -134,10 +134,9 @@ def save_qualifying_loans(qualifying_loans):
                 for loan in qualifying_loans:
                     csvwriter.writerow(loan)
 
-        elif print_loans == "n":
-            print("CSV file not saved")
         else:
-            print("Invalid reply")
+            print("CSV file not saved")
+        
     else:
         print("No qualifyng loans, exiting tool")
     
