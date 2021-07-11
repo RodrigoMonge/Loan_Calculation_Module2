@@ -6,6 +6,7 @@ This is a command line application to match applicants with qualifying loans.
 Example:
     $ python app.py
 """
+import csv
 import sys
 import fire
 import questionary
@@ -98,8 +99,10 @@ def find_qualifying_loans(bank_data, credit_score, debt, income, loan, home_valu
     bank_data_filtered = filter_loan_to_value(loan_to_value_ratio, bank_data_filtered)
 
     print(f"Found {len(bank_data_filtered)} qualifying loans")
-
     return bank_data_filtered
+
+
+    
 
 
 def save_qualifying_loans(qualifying_loans):
@@ -109,8 +112,35 @@ def save_qualifying_loans(qualifying_loans):
         qualifying_loans (list of lists): The qualifying bank loans.
     """
     # @TODO: Complete the usability dialog for savings the CSV Files.
-    # YOUR CODE HERE!
+    # Added conditional in case there are qualifying loans    
+    if qualifying_loans:    
 
+        # Added command line to ask to print a CSV file with the qualifying loans
+        print_loans  = questionary.text("Do you want to print the qualifying loans (y/n)").ask()
+
+        # Added conditional in case the answer is no or a different reply
+        if print_loans == "y":
+
+            # Added prompt for a path
+            output_path = questionary.text('Please enter file_path/file_name.csv').ask()
+    
+            # Added header
+            header = ["loan_price", "remaining_months", "repayment_interval", "future_value","present_value"]
+            
+            # Saving the CSV lines    
+            with open(output_path, "w", newline='') as csvfile:
+                csvwriter = csv.writer(csvfile, delimiter = ",")
+                csvwriter.writerow(header)
+                for loan in qualifying_loans:
+                    csvwriter.writerow(loan)
+
+        elif print_loans == "n":
+            print("CSV file not saved")
+        else:
+            print("Invalid reply")
+    else:
+        print("No qualifyng loans, exiting tool")
+    
 
 def run():
     """The main function for running the script."""
